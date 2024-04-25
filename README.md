@@ -1,4 +1,4 @@
-<h1 align="center">AI Data Matching</h1>
+<h1 align="center">Neural Networks</h1>
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -15,23 +15,12 @@
       .\lx_install_venv.sh
        ```
 
-3. Create .env file in the root level
-    ```sh
-    LOCAL_PATH="path/to/your/file.xlsx
-    ```
-
-Remark that to run this project locally, in Windows you can use:
-
-```sh
-run_st_app.bat
-```
-
-5. Install precommit and test it in commit
+4. Install precommit and test it in commit
   ```sh
   pre-commit install
   ```
 
-9. Associate and push with the private github repo
+5. Associate and push with the github repo
 ```sh
 git init
 git commit -m "first commit"
