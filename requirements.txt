@@ -3,3 +3,4 @@ pre-commit==3.7.0
 
 # UTILS
 numpy==1.26.4
+matplotlib==3.8.4
