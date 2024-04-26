@@ -106,13 +106,7 @@ def compare_estimates():
     # plt.close()
 
 
-def main():
-
-    compare_estimates()
-
-    # "Using the Gradient" example
-    # ============================
-
+def use_gradient_example():
     # We'll minimize $x^2$ for $x \in R^3$
     # pick a random starting point
     v = np.random.uniform(-10, 10, 3)
@@ -120,46 +114,43 @@ def main():
     for epoch in range(1000):
         grad = sum_of_squares_gradient(v)  # compute the gradient at v
         v = gradient_step(v, grad, -1e-2)  # take a negative gradient step
-        print(epoch, v)
+        if epoch % 100 == 0:
+            print(epoch, v)
 
     assert np.linalg.norm(v) < 1e-6, "v should be close to 0"
 
-    # First "Using Gradient Descent to Fit Models" example
-    # 1. Start with a random value for theta.
-    # 2. Compute the mean of the gradients.
-    # 3. Adjust theta in that direction.
-    # 4. Repeat.
-    # ====================================================
 
-    # x ranges from -50 to 49, y is always 20 * x + 5
-    params = [20, 5]  # slope, intercept
-    inputs = np.array([(x, params[0] * x + params[1]) for x in range(-50, 50)])
+def gradient_fits_regression_model(
+    beta: list, inputs: NDArray, learning_rate: float, tol: float
+):
     # Start with random values for slope and intercept.
     theta = np.random.uniform(-1, 1, 2)
-
-    learning_rate = 1e-3
-    # we can also add a tolerance parameter to stop early if we're converging
-    tol = 1e-2
     for epoch in range(5000):
         # Compute the mean of the gradients
         grads_list = [linear_gradient(x, y, theta) for x, y in inputs]
         grad = np.vstack(grads_list).mean(axis=0)
         # Take a step in that direction
         theta = gradient_step(theta, grad, -learning_rate)
-        print(epoch, theta)
+        # print(epoch, theta)
         # Check if we've converged
-        if np.linalg.norm(theta - params) < tol:
-            print(f"Converged in {epoch} epochs")
+        if np.linalg.norm(theta - beta) < tol:
             break
 
-    slope, intercept = theta
-    assert np.linalg.norm(theta - params) < tol, f"params should be {params}"
-    # Check if we've converged element-wise (there's no reason, we stopped when L2-convergence)
-    assert abs(slope - params[0]) < tol, f"slope should be about {params[0]}"
-    assert abs(intercept - params[1]) < tol, f"intercept should be about {params[1]}"
+    if np.linalg.norm(theta - beta) < tol:
+        print(f"@gradient converged in {epoch} epochs\ntheta={theta}")
+    else:
+        print(f"@gradient didn't converge in {epoch} epochs\ntheta={theta}")
 
-    # Minibatch gradient descent example
-    # ==================================
+    slope, intercept = theta
+    assert np.linalg.norm(theta - beta) < tol, f"params should be {beta}"
+    # Check if we've converged element-wise (there's no reason, we stopped when L2-convergence)
+    assert abs(slope - beta[0]) < tol, f"slope should be about {beta[0]}"
+    assert abs(intercept - beta[1]) < tol, f"intercept should be about {beta[1]}"
+
+
+def minibatch_gradient_fits_regression_model(
+    beta: list, inputs: NDArray, learning_rate: float, tol: float
+):
     theta = np.random.uniform(-1, 1, 2)
 
     for epoch in range(1000):
@@ -167,16 +158,74 @@ def main():
             grads_list = [linear_gradient(x, y, theta) for x, y in batch]
             grad = np.vstack(grads_list).mean(axis=0)
             theta = gradient_step(theta, grad, -learning_rate)
-        print(epoch, theta)
+        # print(epoch, theta)
         # Check if we've converged
-        if np.linalg.norm(theta - params) < tol:
-            print(f"Converged in {epoch} mini-batches epochs")
+        if np.linalg.norm(theta - beta) < tol:
             break
 
+    if np.linalg.norm(theta - beta) < tol:
+        print(f"@minibatch_gradient converged in {epoch} epochs\ntheta={theta}")
+    else:
+        print(f"@minibatch_gradient didn't converge in {epoch} epochs\ntheta={theta}")
+
     slope, intercept = theta
-    assert abs(slope - params[0]) < tol, f"slope should be about {params[0]}"
-    assert abs(intercept - params[1]) < tol, f"intercept should be about {params[1]}"
-    assert np.linalg.norm(theta - np.array([20, 5])) < tol, f"params should be {params}"
+    assert abs(slope - beta[0]) < tol, f"slope should be about {beta[0]}"
+    assert abs(intercept - beta[1]) < tol, f"intercept should be about {beta[1]}"
+    assert np.linalg.norm(theta - np.array([20, 5])) < tol, f"params should be {beta}"
+
+
+def stochastic_gradient_fits_regression_model(
+    beta: list, inputs: NDArray, learning_rate: float, tol: float
+):
+    theta = np.random.uniform(-1, 1, 2)
+    print("initial:", theta)
+    for epoch in range(100):
+        for x, y in inputs:
+            grad = linear_gradient(x, y, theta)
+            theta = gradient_step(theta, grad, -learning_rate)
+        # print(epoch, theta)
+        # Check if we've converged
+        if np.linalg.norm(theta - beta) < tol:
+            break
+
+    if np.linalg.norm(theta - beta) < tol:
+        print(f"@stochastic_gradient converged in {epoch} epochs\ntheta={theta}")
+    else:
+        print(f"@stochastic_gradient didn't converge in {epoch} epochs\ntheta={theta}")
+
+    slope, intercept = theta
+    assert abs(slope - beta[0]) < tol, f"slope should be about {beta[0]}"
+    # remark how the tolerance was relaxed for element-wise checks
+    assert abs(intercept - beta[1]) < tol * 10, f"intercept should be about {beta[1]}"
+    assert (
+        np.linalg.norm(theta - np.array([20, 5])) < tol * 10
+    ), f"params should be {beta}"
+
+
+def main():
+    compare_estimates()
+
+    # "Using the Gradient" example
+    # ============================
+    use_gradient_example()
+
+    # First "Using Gradient Descent to Fit Models" example
+    # 1. Start with a random value for theta.
+    # 2. Compute the mean of the gradients.
+    # 3. Adjust theta in that direction.
+    # 4. Repeat.
+    # ====================================================
+    params = [20, 5]  # slope, intercept
+    # x ranges from -50 to 49, y is always 20 * x + 5
+    inputs = np.array([(x, params[0] * x + params[1]) for x in range(-50, 50)])
+    learning_rate = 1e-3
+    # we can also add a tolerance parameter to stop early if we're converging
+    tol = 1e-2
+    gradient_fits_regression_model(params, inputs, learning_rate, tol)
+
+    # Minibatch gradient descent example
+    # ==================================
+    minibatch_gradient_fits_regression_model(params, inputs, learning_rate, tol)
 
     # Stochastic gradient descent example
     # On this problem, stochastic gradient descent finds the optimal parameters in a much
@@ -185,27 +234,7 @@ def main():
     # gradient for a single point might lie in a very different direction from the gradient for
     # the dataset as a whole.
     # ===================================
-    theta = np.random.uniform(-1, 1, 2)
-    print("initial:", theta)
-    for epoch in range(100):
-        for x, y in inputs:
-            grad = linear_gradient(x, y, theta)
-            theta = gradient_step(theta, grad, -learning_rate)
-        print(epoch, theta)
-        # Check if we've converged
-        if np.linalg.norm(theta - params) < tol:
-            print(f"Converged in {epoch} 1 mini-batches (stochastic) epochs")
-            break
-
-    slope, intercept = theta
-    assert abs(slope - params[0]) < tol, f"slope should be about {params[0]}"
-    # remark how the tolerance was relaxed for element-wise checks
-    assert (
-        abs(intercept - params[1]) < tol * 10
-    ), f"intercept should be about {params[1]}"
-    assert (
-        np.linalg.norm(theta - np.array([20, 5])) < tol * 10
-    ), f"params should be {params}"
+    stochastic_gradient_fits_regression_model(params, inputs, learning_rate, tol)
 
 
 if __name__ == "__main__":
