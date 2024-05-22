@@ -125,7 +125,7 @@ def gradient_fits_regression_model(
 ):
     # Start with random values for slope and intercept.
     theta = np.random.uniform(-1, 1, 2)
-    print("initial:", theta)
+    print("\ngradient initial:", theta)
 
     epoch = 0  # avoids annoying PyCharm warning
     for epoch in range(5000):
@@ -155,7 +155,7 @@ def minibatch_gradient_fits_regression_model(
     beta: list, inputs: NDArray, learning_rate: float, tol: float
 ):
     theta = np.random.uniform(-1, 1, 2)
-    print("initial:", theta)
+    print("\nminibatch_gradient initial:", theta)
 
     epoch = 0  # avoids annoying PyCharm warning
     for epoch in range(1000):
@@ -183,7 +183,7 @@ def stochastic_gradient_fits_regression_model(
     beta: list, inputs: NDArray, learning_rate: float, tol: float
 ):
     theta = np.random.uniform(-1, 1, 2)
-    print("initial:", theta)
+    print("\nstochastic_gradient initial:", theta)
 
     epoch = 0  # avoids annoying PyCharm warning
     for epoch in range(100):
