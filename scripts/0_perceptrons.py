@@ -22,7 +22,7 @@ def sigmoid(t: float) -> float:
 """
 PERCEPTRON
 Pretty much the simplest neural network is the perceptron, which approximates a sin‐
-gle neuron with n binary inputs. It computes a weighted sum of its inputs and “fires”
+gle neuron with n binary inputs. It computes a weighted sum of its inputs and "fires"
 if that weighted sum is 0 or greater.
 """
 

@@ -2,5 +2,12 @@
 pre-commit==3.7.0
 
 # UTILS
+pandas==2.2.3
 numpy==1.26.4
 matplotlib==3.8.4
+
+# LINTERS
+black==24.3.0
+
+# LOGGING
+loguru==0.7.2
