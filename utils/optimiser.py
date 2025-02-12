@@ -56,7 +56,12 @@ def gradient_step(
     v: NDArray[float64], gradient: NDArray[float64], step_size: float
 ) -> NDArray[float64]:
     """Moves `step_size` in the `gradient` direction from `v`"""
-    assert v.shape[0] == gradient.shape[0]
+    # assert v.shape[0] == gradient.shape[0]
+    if isinstance(v, list):
+        v = np.array(v)
+    if isinstance(gradient, list):
+        gradient = np.array(gradient)
+    assert v.shape == gradient.shape
     step = step_size * gradient
     return v + step
 
