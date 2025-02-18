@@ -138,7 +138,7 @@ def main():
     -> cambiando el activador: relu, sigmoid
 
     """
-    n_points = 100
+    n_points = 300
     val_min, val_max = -1.5, 1.5
     activation = "relu"
     epochs = 500  # 500

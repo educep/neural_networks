@@ -87,9 +87,9 @@ query = "Should people go back to yesterday?"
 # Perform a search in the FAISS index for similar text chunks
 index.similarity_search_with_relevance_scores(query)
 
-# -------------------------------
+# -----------------------------------------------------
 # 6. Configure the retriever (tuning search parameters)
-# -------------------------------
+# -----------------------------------------------------
 
 retriever = index.as_retriever()
 
