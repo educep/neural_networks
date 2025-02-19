@@ -5,6 +5,7 @@ pre-commit==3.7.0
 pandas==2.2.3
 numpy==1.26.4
 matplotlib==3.8.4
+plotly==6.0.0
 
 # LINTERS
 black==24.3.0

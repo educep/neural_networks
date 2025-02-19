@@ -1,4 +1,8 @@
 """
+Created by Analitika at 18/02/2025
+contact@analitika.fr
+"""
+"""
 Created by Analitika at 12/02/2025
 contact@analitika.fr
 """
@@ -17,4 +21,4 @@ OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL")
 SMALL_EMBEDDINGS_MODEL = os.getenv("SMALL_EMBEDDINGS_MODEL")
 
 PROJ_ROOT = Path(__file__).resolve().parents[1]
-CHATBOT_DATA = PROJ_ROOT / "chatbot/data"
+DATA_FOLDER = PROJ_ROOT / "coder/data"

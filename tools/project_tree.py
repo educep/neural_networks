@@ -107,31 +107,53 @@ def my_criteria(this_path):
     return is_not_hidden_ and is_not_excluded_ and is_not_dunder_
 
 
+def my_py_criteria(this_path):
+    """
+    Filters out all files that are not .py.
+    Directories are always allowed.
+    """
+    if not my_criteria(this_path):
+        return False
+    if this_path.is_file():
+        return this_path.suffix.lower() == ".py"
+    return True
+
+
 @app.command()
-def main():
-    # Example usage:
-    # With a criteria
+def main(path_file: str = "", only_py: bool = False, write_file: bool = True) -> str:
     import os
     from datetime import datetime
 
     exec_time = datetime.today().strftime("%Y-%m-%d %H:%M")
-    cpath = Path(__file__).parent.parent
+    if not path_file:
+        cpath = Path(__file__).parent.parent
+    else:
+        cpath = path_file
 
-    # Define the file path
     file_path = os.path.join(cpath, "project_structure.txt")
-    paths = DisplayablePath.make_tree(Path(cpath), criteria=my_criteria)
-    # Open the file in write mode (creates the file if it doesn't exist)
-    fullpath = ""
-    with open(file_path, "w", encoding="utf-8") as file:
-        file.write("Created by Analitika: contact@analitika.fr" + "\n")
-        file.write(f"Folder PATH listing as of {exec_time}" + "\n")
-        file.write("Created with tools.project_tree.DisplayablePath" + "\n\n")
-        for path_ in paths:
-            file.write(path_.displayable() + "\n")
-            fullpath = fullpath + "\n" + path_.displayable()
+    criteria_function = my_py_criteria if only_py else my_criteria
+    paths = DisplayablePath.make_tree(Path(cpath), criteria=criteria_function)
+
+    # Build the output in memory
+    lines = [
+        "Created by Analitika: contact@analitika.fr",
+        f"Folder PATH listing as of {exec_time}",
+        "Created with tools.project_tree.DisplayablePath",
+        "",
+    ]
+    for path_ in paths:
+        lines.append(path_.displayable())
+
+    fullpath = "\n".join(lines)
+
+    # Write to file only if required
+    if write_file:
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(fullpath)
+        logger.info("Printed Tree Structure in ./project_structure.txt...")
 
     logger.success(f"Processing project structure complete:\n{fullpath}")
-    logger.info("Printed Tree Structure in ./project_structure.txt...")
+    return fullpath
 
 
 if __name__ == "__main__":

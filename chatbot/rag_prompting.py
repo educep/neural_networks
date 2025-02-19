@@ -147,7 +147,7 @@ def main():
 
     # Example questions to test the chatbot
     questions = [
-        "What is the story of Alice in Wonderland about?",
+        # "What is the story of Alice in Wonderland about?",
         "Who is the Mad Hatter?",
         "What advice does the Cheshire Cat give to Alice?",
         "What path should you take if you don't know where you are going?",
